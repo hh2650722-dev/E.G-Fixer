@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="E.G Fixer - Gemini AI 기반 초고성능 문법 교정 및 에세이 평가 도구. 당신의 글을 완벽하게 변신시키세요.">
+    <meta property="og:title" content="E.G Fixer - AI 문법 교정 & 에세이 평가">
+    <meta property="og:description" content="Gemini AI가 당신의 글을 전문적인 수준으로 업그레이드합니다.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1516534775068-bb57b6439066?w=1200&h=630&fit=crop">
+    <meta name="theme-color" content="#6366f1">
+    <title>E.G Fixer - 완벽한 문법 교정 도구</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Syne:wght@400;500;600;700;800&family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --accent: #fbbf24;
+            --dark-bg: #0f172a;
+            --dark-bg-secondary: #1e293b;
+            --light-bg: #f8fafc;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--light-bg) 0%, #f0f4ff 100%);
+            color: #1e293b;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        body.dark {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1f3a 100%);
+            color: #e2e8f0;
+        }
+        
+        /* Typography */
+        .font-display {
+            font-family: 'Playfair Display', serif;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        
+        .font-syne {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+        
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 8s ease infinite;
+        }
+        
+        @keyframes gradient-shift {
+            0%, 100% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(10deg); }
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+        
+        @keyframes glow-pulse {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(99, 102, 241, 0.4), 0 0 40px rgba(99, 102, 241, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(99, 102, 241, 0.6), 0 0 60px rgba(99, 102, 241, 0.3);
+            }
+        }
+        
+        @keyframes scale-in {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes shine {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .animate-slide-in-left {
+            animation: slideInLeft 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .animate-slide-in-right {
+            animation: slideInRight 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        .animate-glow-pulse {
+            animation: glow-pulse 3s ease-in-out infinite;
+        }
+        
+        .animate-scale-in {
+            animation: scale-in 0.6s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+        .stagger-5 { animation-delay: 0.5s; }
+        .stagger-6 { animation-delay: 0.6s; }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Cards & Buttons */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(226, 232, 240, 0.5);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .card:hover::before {
+            left: 100%;
+        }
+        
+        .dark .card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+        }
+        
+        .card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 30px 60px rgba(99, 102, 241, 0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 16px 40px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.5s ease;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(99, 102, 241, 0.5);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        /* Hero Section */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px 80px;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -200px;
+            right: -100px;
+            z-index: 0;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: -100px;
+            left: -50px;
+            z-index: 0;
+            animation: float 8s ease-in-out infinite 1s;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            letter-spacing: -0.03em;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            color: #64748b;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+        }
+        
+        .dark .hero p {
+            color: #cbd5e1;
+        }
+        
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(248, 250, 252, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+            padding: 16px 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .dark .navbar {
+            background: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+        }
+        
+        .navbar.scrolled {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background: rgba(248, 250, 252, 0.95);
+        }
+        
+        .dark .navbar.scrolled {
+            background: rgba(15, 23, 42, 0.95);
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 900;
+            font-size: 1.2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .dark .nav-link {
+            color: #cbd5e1;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* Sections */
+        .section {
+            padding: 100px 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .section-title {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+        
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #64748b;
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 80px;
+            line-height: 1.7;
+        }
+        
+        .dark .section-subtitle {
+            color: #cbd5e1;
+        }
+        
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+        
+        .feature-card {
+            position: relative;
+        }
+        
+        .feature-card .card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: scale(1.15) rotate(5deg);
+        }
+        
+        .feature-icon svg {
+            width: 32px;
+            height: 32px;
+            color: var(--primary);
+        }
+        
+        /* Testimonials */
+        .testimonial {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(226, 232, 240, 0.5);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .dark .testimonial {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+        }
+        
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .testimonial-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 900;
+            font-size: 1.2rem;
+        }
+        
+        .stars {
+            color: var(--accent);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+            margin: 80px 20px;
+        }
+        
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -200px;
+            right: -100px;
+        }
+        
+        .cta-section::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: -100px;
+            left: -50px;
+        }
+        
+        .cta-content {
+            position: relative;
+            z-index: 2;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+        }
+        
+        .cta-section p {
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+        
+        /* Footer */
+        footer {
+            background: #1a1a2e;
+            color: #cbd5e1;
+            padding: 60px 20px 30px;
+            text-align: center;
+            border-top: 1px solid rgba(71, 85, 105, 0.3);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .footer-link {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-link:hover {
+            color: white;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeInUp 0.3s ease;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            animation: scale-in 0.3s ease;
+        }
+        
+        .dark .modal-content {
+            background: var(--dark-bg-secondary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 20px;
+            }
+            
+            .section {
+                padding: 60px 20px;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+                <div class="logo-icon">E</div>
+                <span>E.G Fixer</span>
+            </div>
+            <div class="nav-links">
+                <a href="#features" class="nav-link">기능</a>
+                <a href="#how-it-works" class="nav-link">사용법</a>
+                <a href="#testimonials" class="nav-link">평가</a>
+                <button class="btn-primary" onclick="scrollToApp()">지금 시작</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="animate-fade-in-up">
+                당신의 글을<br><span class="gradient-text">완벽하게</span> 변신시키세요
+            </h1>
+            <p class="animate-fade-in-up stagger-1">
+                Gemini AI 기반의 초강력 문법 교정 도구. 에세이 평가부터 진짜 사람처럼 쓰는 법까지, 모든 게 한 곳에. 지금 바로 경험해보세요.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up stagger-2">
+                <button class="btn-primary text-lg" onclick="scrollToApp()">
+                    <i data-lucide="sparkles" class="inline mr-2 w-5 h-5"></i>
+                    지금 바로 사용하기
+                </button>
+                <button class="btn-secondary text-lg" onclick="showFeatures()">
+                    <i data-lucide="play" class="inline mr-2 w-5 h-5"></i>
+                    기능 알아보기
+                </button>
+            </div>
+            
+            <!-- Stats -->
+            <div class="grid grid-cols-3 gap-6 max-w-2xl mx-auto mt-20 animate-fade-in-up stagger-3">
+                <div class="text-center">
+                    <div class="text-3xl font-bold gradient-text">6+</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 mt-2">다양한 모드</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold gradient-text">∞</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 mt-2">무제한 사용</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold gradient-text">100%</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 mt-2">완전 무료</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section" id="features">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="section-title">강력한 기능들</h2>
+            <p class="section-subtitle">E.G Fixer가 당신의 글쓰기를 어떻게 변화시키는지 확인해보세요</p>
+            
+            <div class="feature-grid">
+                <div class="feature-card animate-fade-in-up stagger-1">
+                    <div class="card">
+                        <div class="feature-icon">
+                            <i data-lucide="sparkles" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4">AI 문법 교정</h3>
+                        <p class="text-gray-600 dark:text-gray-400 flex-1">실시간으로 문법 오류를 찾아내고 자연스럽게 교정합니다. 기계적인 수정이 아닌 진정한 문장 개선을 경험하세요.</p>
+                    </div>
+                </div>
+                
+                <div class="feature-card animate-fade-in-up stagger-2">
+                    <div class="card">
+                        <div class="feature-icon">
+                            <i data-lucide="book-open" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4">에세이 평가</h3>
+                        <p class="text-gray-600 dark:text-gray-400 flex-1">AI 탐지, 논리 분석, 구조 평가까지 전문가 수준의 상세한 피드백을 받아보세요.</p>
+                    </div>
+                </div>
+                
+                <div class="feature-card animate-fade-in-up stagger-3">
+                    <div class="card">
+                        <div class="feature-icon">
+                            <i data-lucide="user" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4">진짜 사람 모드</h3>
+                        <p class="text-gray-600 dark:text-gray-400 flex-1">AI 탐지를 피하면서도 자연스럽고 인간적인 톤으로 당신의 글을 재작성합니다.</p>
+                    </div>
+                </div>
+                
+                <div class="feature-card animate-fade-in-up stagger-4">
+                    <div class="card">
+                        <div class="feature-icon">
+                            <i data-lucide="globe" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4">다국어 지원</h3>
+                        <p class="text-gray-600 dark:text-gray-400 flex-1">한국어, 영어, 혼합 모드로 자유롭게 글을 작성하고 교정받을 수 있습니다.</p>
+                    </div>
+                </div>
+                
+                <div class="feature-card animate-fade-in-up stagger-5">
+                    <div class="card">
+                        <div class="feature-icon">
+                            <i data-lucide="palette" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4">톤 커스터마이징</h3>
+                        <p class="text-gray-600 dark:text-gray-400 flex-1">격식, 구어체, 문학적 톤 등 6가지 스타일을 선택해 당신의 목적에 맞게 글을 변형하세요.</p>
+                    </div>
+                </div>
+                
+                <div class="feature-card animate-fade-in-up stagger-6">
+                    <div class="card">
+                        <div class="feature-icon">
+                            <i data-lucide="zap" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4">Pro Mode</h3>
+                        <p class="text-gray-600 dark:text-gray-400 flex-1">전문적인 어휘와 구조로 당신의 텍스트를 한 단계 높은 수준으로 완전히 업그레이드합니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="section" id="how-it-works" style="background: rgba(99, 102, 241, 0.05);">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="section-title">사용하는 방법</h2>
+            <p class="section-subtitle">단 3단계로 완벽한 글쓰기를 경험하세요</p>
+            
+            <div class="grid md:grid-cols-3 gap-12">
+                <div class="text-center animate-fade-in-up stagger-1">
+                    <div class="w-24 h-24 bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-full flex items-center justify-center text-white text-4xl font-black mx-auto mb-6 animate-glow-pulse">1</div>
+                    <h3 class="text-2xl font-bold mb-4">텍스트 입력</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg">교정하고 싶은 문장이나 에세이를 입력창에 붙여넣기만 하세요. 길이 제한이 없습니다.</p>
+                </div>
+                
+                <div class="text-center animate-fade-in-up stagger-2">
+                    <div class="w-24 h-24 bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-full flex items-center justify-center text-white text-4xl font-black mx-auto mb-6 animate-glow-pulse">2</div>
+                    <h3 class="text-2xl font-bold mb-4">옵션 선택</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg">언어, 톤, 모드를 선택하고 "분석 시작" 버튼을 클릭하세요. 10초 내에 결과를 받습니다.</p>
+                </div>
+                
+                <div class="text-center animate-fade-in-up stagger-3">
+                    <div class="w-24 h-24 bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-full flex items-center justify-center text-white text-4xl font-black mx-auto mb-6 animate-glow-pulse">3</div>
+                    <h3 class="text-2xl font-bold mb-4">결과 확인</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg">개선된 텍스트와 상세한 설명을 확인하고 한 번의 클릭으로 복사하세요.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="section" id="testimonials">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="section-title">사용자 평가</h2>
+            <p class="section-subtitle">실제 사용자들의 경험을 들어보세요</p>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="testimonial animate-fade-in-up stagger-1">
+                    <div class="stars">★★★★★</div>
+                    <p class="text-gray-700 dark:text-gray-300 mb-4 font-medium">"에세이 평가 기능이 정말 좋아요. 제 글의 약점을 명확하게 알려줘서 다음 글을 쓸 때 많이 도움이 됐어요."</p>
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">J</div>
+                        <div>
+                            <p class="font-bold">정민준</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">대학생</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial animate-fade-in-up stagger-2">
+                    <div class="stars">★★★★★</div>
+                    <p class="text-gray-700 dark:text-gray-300 mb-4 font-medium">"Pro Mode는 정말 대박입니다. 제 평범한 문장이 전문가 수준의 문장으로 변환되는 것을 봤을 때 깜짝 놀랐어요."</p>
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">S</div>
+                        <div>
+                            <p class="font-bold">서지은</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">프리랜서 작가</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial animate-fade-in-up stagger-3">
+                    <div class="stars">★★★★★</div>
+                    <p class="text-gray-700 dark:text-gray-300 mb-4 font-medium">"영어 에세이를 한국어로도 쓸 수 있어서 정말 편해요. 모든 기능이 무료인 것도 신기하고 좋습니다."</p>
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">L</div>
+                        <div>
+                            <p class="font-bold">Lee David</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">영문과 대학생</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial animate-fade-in-up stagger-4">
+                    <div class="stars">★★★★★</div>
+                    <p class="text-gray-700 dark:text-gray-300 mb-4 font-medium">"진짜 사람 모드가 정말 신기합니다. AI 탐지 회피까지 되면서도 자연스러운 문장으로 변환되니까 완벽해요."</p>
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">K</div>
+                        <div>
+                            <p class="font-bold">김하늘</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">고등학생</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="app">
+        <div class="cta-content">
+            <h2>지금 바로 시작하세요</h2>
+            <p>완전히 무료입니다. 가입도 필요 없습니다.</p>
+            <a href="https://gemini.google.com/share/137929cfa24b" target="_blank" rel="noopener noreferrer" class="btn-primary inline-block mt-8 text-lg">
+                <i data-lucide="sparkles" class="inline mr-2 w-5 h-5"></i>
+                E.G Fixer 열기
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="flex items-center justify-center gap-3 mb-8">
+                <div class="logo-icon" style="width: 32px; height: 32px;">E</div>
+                <span class="text-xl font-bold">E.G Fixer</span>
+            </div>
+            
+            <div class="footer-links">
+                <a href="#features" class="footer-link">기능</a>
+                <a href="#how-it-works" class="footer-link">사용법</a>
+                <a href="#testimonials" class="footer-link">평가</a>
+                <a href="#" class="footer-link">개인정보</a>
+                <a href="#" class="footer-link">이용약관</a>
+            </div>
+            
+            <p>&copy; 2024 E.G Fixer. Powered by Gemini Canvas. All rights reserved.</p>
+            <p class="text-sm mt-4 opacity-75">Made with ❤️ for better writing</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Scroll to app
+        function scrollToApp() {
+            document.getElementById('app').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.animate-fade-in-up, .animate-slide-in-left, .animate-slide-in-right').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Dark mode toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark');
+            localStorage.setItem('eg-dark-mode', document.body.classList.contains('dark'));
+        }
+        
+        // Load dark mode preference
+        if (localStorage.getItem('eg-dark-mode') === 'true') {
+            document.body.classList.add('dark');
+        }
+    </script>
+</body>
+</html>
